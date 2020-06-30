@@ -16,7 +16,7 @@
 >    },
 >    "smtp": {//邮件配置
 >        "address": "smtp.exmail.qq.com:25",//邮件发送服务器地址
->        "username": "kexirong@example.com",
+>        "username": "qist@example.com",
 >        "password": "123456",
 >        "authtype":"LOGIN"//认证类型/CRAM-MD5/LOGIN/PLAIN,默认PLAIN
 >    },
@@ -32,7 +32,7 @@
 
 >```shell
 >curl -d "to=test@qq.com,test@sina.com&subject=test&content=测试报文体" "http://10.1.1.202:4000/sender/mail"
->curl -d "to=kexirong&&content=测试报文体" "http://10.1.1.202:4000/sender/wechat"
+>curl -d "to=qist&&content=测试报文体" "http://10.1.1.202:4000/sender/wechat"
 >```
 
 ```git
@@ -40,6 +40,6 @@ echo "# msgsender" >> README.md
 git init
 git add README.md
 git commit -m "first commit"
-git remote add origin https://github.com/kexirong/msg-sender.git
+git remote add origin https://github.com/qist/msg-sender.git
 git push -u origin master
 ```
