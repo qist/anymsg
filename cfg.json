@@ -1,0 +1,19 @@
+{
+    "debug": true,
+    "http": {
+        "listen": "0.0.0.0:4000",
+        "allow":["*"],
+        "deny":[]
+    },
+    "smtp": {
+        "address": "smtp.vip.com:25",
+        "username": "****@vip.com",
+        "password": "*****",
+        "authtype":"LOGIN"
+    },
+    "wechat":{
+        "CorpID":"ww2085adb",
+        "AgentId":1000002,
+        "Secret":"5WsjwD2DqyR4PMTWnJJp_AZsaKc"
+    }
+}
