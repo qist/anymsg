@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/bitly/go-simplejson"
-	"github.com/kexirong/msg-sender/email"
-	"github.com/kexirong/msg-sender/wechat"
+	"github.com/qist/msg-sender/email"
+	"github.com/qist/msg-sender/wechat"
 )
 
 var (

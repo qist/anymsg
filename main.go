@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/kexirong/msg-sender/http"
+	"github.com/qist/msg-sender/http"
 )
 
 const cfgFileName = "cfg.json"
