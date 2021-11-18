@@ -149,6 +149,7 @@ func easyjson17a47f2aDecodeGithubComKexirongMsgSenderWechat1(in *jlexer.Lexer, o
 			out.ToParty = string(in.String())
 		case "msgtype":
 			out.MsgType = string(in.String())
+
 		case "agentid":
 			out.AgentID = int(in.Int())
 		case "text":
@@ -163,6 +164,7 @@ func easyjson17a47f2aDecodeGithubComKexirongMsgSenderWechat1(in *jlexer.Lexer, o
 		in.Consumed()
 	}
 }
+
 func easyjson17a47f2aEncodeGithubComKexirongMsgSenderWechat1(out *jwriter.Writer, in JsonMsg) {
 	out.RawByte('{')
 	first := true
@@ -274,6 +276,7 @@ func easyjson17a47f2aDecodeGithubComKexirongMsgSenderWechat2(in *jlexer.Lexer, o
 		in.Consumed()
 	}
 }
+
 func easyjson17a47f2aEncodeGithubComKexirongMsgSenderWechat2(out *jwriter.Writer, in Content) {
 	out.RawByte('{')
 	first := true

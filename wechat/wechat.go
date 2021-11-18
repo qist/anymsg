@@ -4,6 +4,10 @@ import (
 	"bytes"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
+
+	//"encoding/gob"
+	//"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -81,9 +85,33 @@ type JsonMsg struct {
 	Text    Content `json:"text"`
 }
 
+// 定义Markdown格式的消息体
+//easyjson:json
+type MarkdownMsg struct {
+	ToUser  string `json:"touser,omitempty"`
+	ToParty string `json:"toparty,omitempty"`
+	MsgType string `json:"msgtype"`
+	AgentID int    `json:"agentid"`
+
+	Markdown Content `json:"markdown"`
+}
+
 /*func checkErr(err error){
 
 }*/
+
+//func (conf *MarkdownMsg) String() string {
+//	b, err := json.Marshal(*conf)
+//	if err != nil {
+//		return fmt.Sprintf("%+v", *conf)
+//	}
+//	var out bytes.Buffer
+//	err = json.Indent(&out, b, "", "    ")
+//	if err != nil {
+//		return fmt.Sprintf("%+v", *conf)
+//	}
+//	return out.String()
+//}
 
 func (wx *WeChat) GetAccToken() error {
 	getAccTokenURL := fmt.Sprintf(AccTokenURL, wx.CorpID, wx.Secret)
@@ -145,4 +173,46 @@ func (wx WeChat) SendMsg(touser, toparty, content string) ([]byte, error) {
 	return ioutil.ReadAll(rsp.Body)
 
 	//return nil, err
+}
+
+// 发送企业微信Markdown格式的方法
+func (wx WeChat) SendMsgMarkdown(touser, toparty, content string) ([]byte, error) {
+	msg := MarkdownMsg{
+		ToUser:  touser,
+		ToParty: toparty,
+		MsgType: "markdown",
+		AgentID: wx.AgentID,
+		Markdown: Content{
+			Content: content,
+		},
+	}
+
+	//fmt.Println("msg: ",msg.String())
+	if wx.AccToken == "" || wx.TokenTS-time.Now().Unix() <= 0 {
+		var err error
+		for i := 0; i < 3; i++ {
+			err = wx.GetAccToken()
+			if err == nil {
+				break
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	msgjson, err := json.Marshal(msg)
+	if err != nil {
+		return nil, err
+	}
+
+	postSendmsgURL := fmt.Sprintf(SendmsgURL, wx.AccToken)
+	rsp, err := TLSClient.Post(postSendmsgURL, "application/json;charset=utf-8", bytes.NewReader(msgjson))
+	if err != nil {
+		return nil, err
+	}
+	defer rsp.Body.Close()
+	return ioutil.ReadAll(rsp.Body)
+
+	return nil, nil
 }

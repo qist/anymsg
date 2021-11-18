@@ -47,6 +47,10 @@ func easyjsonA8a797f8DecodeGithubComKexirongMsgSenderHttp(in *jlexer.Lexer, out 
 			out.Content = string(in.String())
 		case "content_type":
 			out.ContentType = string(in.String())
+		case "msg_type":
+			out.MsgType = string(in.String())
+		case "title":
+			out.Title = string(in.String())
 		default:
 			in.SkipRecursive()
 		}

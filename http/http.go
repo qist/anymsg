@@ -13,9 +13,10 @@ import (
 	"strings"
 	"time"
 
+	"anymsg/dingding"
+	"anymsg/email"
+	"anymsg/wechat"
 	"github.com/bitly/go-simplejson"
-	"github.com/qist/anymsg/email"
-	"github.com/qist/anymsg/wechat"
 )
 
 var (
@@ -24,7 +25,8 @@ var (
 	//Warning log level
 	Warning *log.Logger
 	//Error log level
-	Error *log.Logger
+	Error   *log.Logger
+	MsgType string
 )
 
 type logfile struct {
@@ -134,6 +136,9 @@ func SrvStart(cfg *simplejson.Json) {
 	wxCorpID := wxCfg.Get("CorpID").MustString("")
 	wxAgentID := wxCfg.Get("AgentId").MustInt(0)
 	wxSecret := wxCfg.Get("Secret").MustString("")
+	dingCfg := cfg.Get("dingding")
+	dingurl := dingCfg.Get("Url").MustString("")
+	dingToken := dingCfg.Get("AccessToken").MustString("")
 
 	Info.Println(fmt.Sprintf("httpAddr:%s", httpAddr))
 	Info.Println(fmt.Sprintf("smtpAddr:%s,smtpUser:%s,smtpPass:%s", smtpAddr, smtpUser, smtpPass))
@@ -144,6 +149,7 @@ func SrvStart(cfg *simplejson.Json) {
 	if err != nil {
 		Error.Printf("getAccToken failed: %s/n", err)
 	}
+	dingding := dingding.New(dingurl, dingToken)
 	Info.Printf("getAccToken done: %s /n", wx.AccToken)
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -174,6 +180,7 @@ func SrvStart(cfg *simplejson.Json) {
 				Error.Println(err)
 			}
 			err = pload.UnmarshalJSON(b)
+
 			if err != nil {
 				Error.Println(err)
 			}
@@ -206,10 +213,48 @@ func SrvStart(cfg *simplejson.Json) {
 	http.HandleFunc("/sender/wechat", func(w http.ResponseWriter, r *http.Request) {
 		var pload payload
 		contentType := r.Header.Get("Content-Type")
+		fmt.Println("contentType: ", contentType)
 		switch {
 		case strings.Contains(contentType, "json"):
 			w.Header().Set("Content-Type", contentType)
 			b, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				Error.Println(err)
+			}
+
+			err = pload.UnmarshalJSON(b)
+			if err != nil {
+				Error.Println(err)
+			}
+			fmt.Println("pload: ", pload)
+
+		case strings.Contains(contentType, "x-www-form-urlencoded"):
+			err := r.ParseForm()
+			if err != nil {
+				Error.Println(err)
+			}
+			pload.To = r.PostFormValue("to")
+
+			//testmarkdown := r.PostFormValue("markdown")
+			//if MsgType == "markdown"{
+			//	var markdown Markdown
+			//	err = json.Unmarshal([]byte(testmarkdown), &markdown)
+			//	if err != nil{
+			//		fmt.Println("json.Unmarshal err: ",err)
+			//	}
+			//	pload.Content = r.PostFormValue("content")
+			//	pload.Markdown = markdown
+			//}else {
+			fmt.Println("test: ", MsgType)
+			pload.Content = r.PostFormValue("content")
+			fmt.Println("pload.Content: ", pload.Content)
+			//}
+
+		case strings.Contains(contentType, "markdown"):
+			fmt.Println("r.Body: ", contentType)
+			w.Header().Set("Content-Type", contentType)
+			b, err := ioutil.ReadAll(r.Body)
+			fmt.Println("r.Body: ", b)
 			if err != nil {
 				Error.Println(err)
 			}
@@ -218,28 +263,113 @@ func SrvStart(cfg *simplejson.Json) {
 				Error.Println(err)
 			}
 
+		default:
+			fmt.Println("err")
+			Error.Println("invalid Content-Type")
+		}
+		Info.Printf("#sendWechat# client:%s, to:%s, requestType:%s, content:%s\n", r.RemoteAddr, pload.To, contentType, pload.Content)
+		// 判断发送内容是否是markdown格式的，默认非markdown格式
+		if pload.MsgType == "markdown" {
+			resp, err := wx.SendMsgMarkdown(pload.To, "", pload.Content)
+			if err != nil {
+				Error.Println(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			} else {
+				Info.Printf(string(resp))
+				w.Write(resp)
+			}
+		} else {
+			resp, err := wx.SendMsg(pload.To, "", pload.Content)
+			if err != nil {
+				Error.Println(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			} else {
+				Info.Printf(string(resp))
+				w.Write(resp)
+			}
+		}
+
+	})
+	http.HandleFunc("/sender/dingding", func(w http.ResponseWriter, r *http.Request) {
+		var pload payload
+		contentType := r.Header.Get("Content-Type")
+		fmt.Println("contentType: ", contentType)
+		switch {
+		case strings.Contains(contentType, "json"):
+			w.Header().Set("Content-Type", contentType)
+			b, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				Error.Println(err)
+			}
+
+			err = pload.UnmarshalJSON(b)
+			if err != nil {
+				Error.Println(err)
+			}
+			fmt.Println("pload: ", pload)
+
 		case strings.Contains(contentType, "x-www-form-urlencoded"):
 			err := r.ParseForm()
 			if err != nil {
 				Error.Println(err)
 			}
 			pload.To = r.PostFormValue("to")
+
+			//testmarkdown := r.PostFormValue("markdown")
+			//if MsgType == "markdown"{
+			//	var markdown Markdown
+			//	err = json.Unmarshal([]byte(testmarkdown), &markdown)
+			//	if err != nil{
+			//		fmt.Println("json.Unmarshal err: ",err)
+			//	}
+			//	pload.Content = r.PostFormValue("content")
+			//	pload.Markdown = markdown
+			//}else {
+			fmt.Println("test: ", MsgType)
 			pload.Content = r.PostFormValue("content")
+			fmt.Println("pload.Content: ", pload.Content)
+			//}
+
+		case strings.Contains(contentType, "markdown"):
+			fmt.Println("r.Body: ", contentType)
+			w.Header().Set("Content-Type", contentType)
+			b, err := ioutil.ReadAll(r.Body)
+			fmt.Println("r.Body: ", b)
+			if err != nil {
+				Error.Println(err)
+			}
+			err = pload.UnmarshalJSON(b)
+			if err != nil {
+				Error.Println(err)
+			}
+
 		default:
+			fmt.Println("err")
 			Error.Println("invalid Content-Type")
 		}
 		Info.Printf("#sendWechat# client:%s, to:%s, requestType:%s, content:%s\n", r.RemoteAddr, pload.To, contentType, pload.Content)
-
-		resp, err := wx.SendMsg(pload.To, "", pload.Content)
-		if err != nil {
-			Error.Println(err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		// 判断发送内容是否是markdown格式的，默认非markdown格式
+		if pload.MsgType == "markdown" {
+			resp, err := dingding.SendMsgMarkdown("", pload.To,pload.Title,pload.Content)
+			if err != nil {
+				Error.Println(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			} else {
+				Info.Printf(string(resp))
+				w.Write(resp)
+			}
 		} else {
-			Info.Printf(string(resp))
-			w.Write(resp)
+			resp, err := dingding.SendMsg("", pload.To, pload.Content)
+			if err != nil {
+				Error.Println(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			} else {
+				Info.Printf(string(resp))
+				w.Write(resp)
+			}
 		}
-	})
 
+	})
 	log.Fatal(http.ListenAndServe(httpAddr, nil))
 
 }

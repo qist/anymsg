@@ -1,0 +1,23 @@
+{
+    "debug": true,
+    "http": {
+        "listen": "0.0.0.0:4000",
+        "allow":["*"],
+        "deny":[]
+    },
+    "smtp": {
+        "address": "smtp.vip.com:25",
+        "username": "****@vip.com",
+        "password": "*****",
+        "authtype":"LOGIN"
+    },
+    "wechat":{
+        "CorpID":"xxxxxxx",
+        "AgentId":1,
+        "Secret":"xxxxxxx"
+    },
+    "dingding":{
+        "Url": "https://oapi.dingtalk.com/robot/send?access_token=%s",
+        "AccessToken": "556f30d802f49f4bdef85143b766b1a9cc24a7d41ef50aa8c3fc99ca45adb518"
+    }
+}
