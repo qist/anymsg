@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/bitly/go-simplejson"
 	"io/ioutil"
 	"os"
 	"path"
-
-	"github.com/bitly/go-simplejson"
 )
 
 func isExist(path string) bool { //copy from  phpgo's csdnBlog

@@ -11,8 +11,12 @@ WORKDIR /app
 
 COPY . .
 RUN go version
-RUN go build -o anymsg .
+RUN go build -o anymsg main/
 
+FROM scratch
+
+COPY --from=0 /app/cfg.json /
+COPY --from=0 /app/anymsg /
 EXPOSE 4000
 
 ENTRYPOINT ["./anymsg"]

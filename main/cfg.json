@@ -13,11 +13,11 @@
     },
     "wechat":{
         "CorpID":"xxxxxxx",
-        "AgentId":1,
-        "Secret":"xxxxxxx"
+        "AgentId":1000002,
+        "Secret":"xxxxxxxxxxx"
     },
     "dingding":{
         "Url": "https://oapi.dingtalk.com/robot/send?access_token=%s",
-        "AccessToken": "556f30d802f49f4bdef85143b766b1a9cc24a7d41ef50aa8c3fc99ca45adb518"
+        "AccessToken": "xxxxxxxxxxxxxx"
     }
 }

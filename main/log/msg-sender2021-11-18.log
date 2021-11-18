@@ -1,4 +1,23 @@
-INFO: 2021/11/18 17:42:06 http.go:143: httpAddr:0.0.0.0:4000
-INFO: 2021/11/18 17:42:06 http.go:144: smtpAddr:smtp.vip.com:25,smtpUser:****@vip.com,smtpPass:*****
-ERROR: 2021/11/18 17:42:07 http.go:150: getAccToken failed: get WeChat Access Token error: api forbidden/n
-INFO: 2021/11/18 17:42:07 http.go:153: getAccToken done:  /n
+INFO: 2021/11/18 18:40:35 http.go:143: httpAddr:0.0.0.0:4000
+INFO: 2021/11/18 18:40:35 http.go:144: smtpAddr:smtp.vip.com:25,smtpUser:****@vip.com,smtpPass:*****
+INFO: 2021/11/18 18:40:35 http.go:153: getAccToken done: loJI74ozdsuHedI6_oJC8BvP93mzH3Ef1DfG3I7W7jmZYEZrS_H74Wec-9RfEEn4PfvxdyfQBDbW1kzD6u_RzTBPzYKYSqcRx-nRv7M5q2GBrogokhERcBo7VpxifM8cAgRi81KXTDXGaARHKL9N9XdOEqX9uOqnMyTlsOs2RogEcHSUvES9odmZ6A9j6WMDmLZp1b-7eH7-OjUBpwTOmA /n
+INFO: 2021/11/18 18:40:39 http.go:270: #sendWechat# client:127.0.0.1:57672, to:wangGang, requestType:json, content:您的会议室已经预定，稍后会同步到`邮箱 
+  **事项详情** 
+ 事　项：<font color="info">开会</font> 
+ 组织者 ：@miglioguan>参与者：@miglioguan、@kunliu、@jamdeezhou、@kanexiong、@kisonwang> 
+ 会议室：<font color="info">广州TIT 1楼 301</font> 
+日　期：<font color="warning">2018年5月18日</font> 
+ 时　间：<font color="comment">上午9:00-12:00</font> > 
+ 请准时参加会议。> 
+ 如需修改会议信息，请点击：[修改会议信息](https://work.weixin.qq.com)
+INFO: 2021/11/18 18:40:40 http.go:278: {"errcode":0,"errmsg":"ok","msgid":"WpLDpQFMGSE843kRbNhgXVz5em6ZcFSCW8v3tiVwi3RdHjvLIKsy-_xyT3wQXEHDg6xmzT_BF6tgiiIqep2abQ"}
+INFO: 2021/11/18 18:40:58 http.go:270: #sendWechat# client:127.0.0.1:57769, to:wangGang, requestType:json, content:您的会议室已经预定，稍后会同步到`邮箱 
+  **事项详情** 
+ 事　项：<font color="info">开会</font> 
+ 组织者 ：@miglioguan>参与者：@miglioguan、@kunliu、@jamdeezhou、@kanexiong、@kisonwang> 
+ 会议室：<font color="info">广州TIT 1楼 301</font> 
+日　期：<font color="warning">2018年5月18日</font> 
+ 时　间：<font color="comment">上午9:00-12:00</font> > 
+ 请准时参加会议。> 
+ 如需修改会议信息，请点击：[修改会议信息](https://work.weixin.qq.com)
+INFO: 2021/11/18 18:40:59 http.go:278: {"errcode":0,"errmsg":"ok","msgid":"WpLDpQFMGSE843kRbNhgXVz5em6ZcFSCW8v3tiVwi3T7hfFvJWyh4PUQdHAuMhSxdssBjSqtlC-6guVgGhcs7w"}
