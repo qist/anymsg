@@ -1,8 +1,8 @@
 # msg-sender
 
-- [邮件API](https://github.com/qist/msg-sender/blob/master/email/README.md)
+- [邮件API](https://github.com/qist/anymsg/blob/master/email/README.md)
 
-- [企业微信API](https://github.com/qist/msg-sender/blob/master/wechat/README.md)
+- [企业微信API](https://github.com/qist/anymsg/blob/master/wechat/README.md)
 
 ## cfg.json 是纯json格式
 
@@ -40,6 +40,6 @@ echo "# msgsender" >> README.md
 git init
 git add README.md
 git commit -m "first commit"
-git remote add origin https://github.com/qist/msg-sender.git
+git remote add origin https://github.com/qist/anymsg.git
 git push -u origin master
 ```
