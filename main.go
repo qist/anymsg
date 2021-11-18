@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/qist/msg-sender/http"
+	"github.com/qist/anymsg/http"
 )
 
 const cfgFileName = "cfg.json"
