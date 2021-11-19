@@ -1,8 +1,8 @@
-# wechat-sender
+# dingtalk
 
 ## 请求URL
 
->- `http://ip:port/sender/wechat`
+>- `http://ip:port/sender/dingtalk`
 
 ### 请求方式：
 
@@ -20,4 +20,5 @@
 to  是   string  收件人地址，多个接收者用|分割 全体填@all
 content 是  string  消息 内容
 contentType 否   string  填 text(保留字段)
+msg_type 否     string  填  markdown
 ```
