@@ -12,12 +12,12 @@
         "authtype":"LOGIN"
     },
     "wechat":{
-        "CorpID":"ww94780c40f1c7eae5",
+        "CorpID":"xxxxxxxxx",
         "AgentId":1000002,
-        "Secret":"Vn62sdIwNuAYw5Pd6uKBnLFO42fDiQPoulb5J823hmM"
+        "Secret":"xxxxxxxx"
     },
-    "dingding":{
+    "dingtalk":{
         "Url": "https://oapi.dingtalk.com/robot/send?access_token=%s",
-        "AccessToken": "556f30d802f49f4bdef85143b766b1a9cc24a7d41ef50aa8c3fc99ca45adb518"
+        "AccessToken": "xxxxxxxxxxx"
     }
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/bitly/go-simplejson"
 	"io/ioutil"
 	"os"
-	"path"
 )
 
 func isExist(path string) bool { //copy from  phpgo's csdnBlog
@@ -14,19 +13,19 @@ func isExist(path string) bool { //copy from  phpgo's csdnBlog
 }
 
 func getConfig(fn string) (*simplejson.Json, error) {
-	var fp string
-	wd, err := os.Getwd()
-	if err == nil {
-		fp = path.Join(wd, fn)
-		fmt.Println("path: ", fp)
-	} else {
-		panic(err)
-	}
-	if !isExist(fp) {
+	//var fp string
+	//wd, err := os.Getwd()
+	//if err == nil {
+	//	fp = path.Join(wd, fn)
+	//	fmt.Println("path: ", fp)
+	//} else {
+	//	panic(err)
+	//}
+	if !isExist(fn) {
 		fmt.Println("error: the configfile is not exist")
 		os.Exit(0)
 	}
-	data, err := ioutil.ReadFile(fp)
+	data, err := ioutil.ReadFile(fn)
 	if err != nil {
 		fmt.Println("error:file read error")
 		panic(err)

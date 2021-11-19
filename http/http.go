@@ -1,6 +1,7 @@
 package http
 
 import (
+
 	"errors"
 	"io/ioutil"
 	"strconv"
@@ -13,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"anymsg/dingding"
+	"anymsg/dingtalk"
 	"anymsg/email"
 	"anymsg/wechat"
 	"github.com/bitly/go-simplejson"
@@ -111,7 +112,7 @@ func init() {
 			panic(err)
 		}
 	}
-	fli := newLogFile("msg-sender")
+	fli := newLogFile("anymsg")
 	Info = log.New(fli, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
 	Warning = log.New(fli, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 	Error = log.New(fli, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
@@ -136,7 +137,7 @@ func SrvStart(cfg *simplejson.Json) {
 	wxCorpID := wxCfg.Get("CorpID").MustString("")
 	wxAgentID := wxCfg.Get("AgentId").MustInt(0)
 	wxSecret := wxCfg.Get("Secret").MustString("")
-	dingCfg := cfg.Get("dingding")
+	dingCfg := cfg.Get("dingtalk")
 	dingurl := dingCfg.Get("Url").MustString("")
 	dingToken := dingCfg.Get("AccessToken").MustString("")
 
@@ -149,7 +150,8 @@ func SrvStart(cfg *simplejson.Json) {
 	if err != nil {
 		Error.Printf("getAccToken failed: %s/n", err)
 	}
-	dingding := dingding.New(dingurl, dingToken)
+	dingtalk := dingtalk.New(dingurl, dingToken)
+	fmt.Println("dingtalk: ",dingtalk)
 	Info.Printf("getAccToken done: %s /n", wx.AccToken)
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -290,7 +292,7 @@ func SrvStart(cfg *simplejson.Json) {
 		}
 
 	})
-	http.HandleFunc("/sender/dingding", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/sender/dingtalk", func(w http.ResponseWriter, r *http.Request) {
 		var pload payload
 		contentType := r.Header.Get("Content-Type")
 		fmt.Println("contentType: ", contentType)
@@ -350,7 +352,7 @@ func SrvStart(cfg *simplejson.Json) {
 		Info.Printf("#sendWechat# client:%s, to:%s, requestType:%s, content:%s\n", r.RemoteAddr, pload.To, contentType, pload.Content)
 		// 判断发送内容是否是markdown格式的，默认非markdown格式
 		if pload.MsgType == "markdown" {
-			resp, err := dingding.SendMsgMarkdown("", pload.To,pload.Title,pload.Content)
+			resp, err := dingtalk.SendMsgMarkdown("", pload.To,pload.Title,pload.Content)
 			if err != nil {
 				Error.Println(err)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -359,7 +361,7 @@ func SrvStart(cfg *simplejson.Json) {
 				w.Write(resp)
 			}
 		} else {
-			resp, err := dingding.SendMsg("", pload.To, pload.Content)
+			resp, err := dingtalk.SendMsg("", pload.To, pload.Content)
 			if err != nil {
 				Error.Println(err)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
