@@ -28,12 +28,10 @@
 >    "dingding":{//钉钉配置
 >        "Url":"https://oapi.dingtalk.com/robot/send?access_token=%s", //钉钉机器人连接地址
 >        "AccessToken":"xxxxxxxx" //创建钉钉机器人后连接地址access_token后面的字符串
-
 >    }
 >    "lark":{//飞书配置
 >        "Url":"https://open.feishu.cn/open-apis/bot/v2/hook/%s", //钉钉机器人连接地址
 >        "AccessToken":"xxxxxxxx" //创建飞书机器人后连接地址https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxxxxxxxxx ， xxx的字符串就是AccessToken
-
 >    }
 >}
 >```
