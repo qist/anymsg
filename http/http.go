@@ -1,7 +1,7 @@
 package http
 
 import (
-
+	"anymsg/lark"
 	"errors"
 	"io/ioutil"
 	"strconv"
@@ -140,6 +140,9 @@ func SrvStart(cfg *simplejson.Json) {
 	dingCfg := cfg.Get("dingtalk")
 	dingurl := dingCfg.Get("Url").MustString("")
 	dingToken := dingCfg.Get("AccessToken").MustString("")
+	larkCfg := cfg.Get("lark")
+	larkurl := larkCfg.Get("Url").MustString("")
+	larkToken := larkCfg.Get("AccessToken").MustString("")
 
 	Info.Println(fmt.Sprintf("httpAddr:%s", httpAddr))
 	Info.Println(fmt.Sprintf("smtpAddr:%s,smtpUser:%s,smtpPass:%s", smtpAddr, smtpUser, smtpPass))
@@ -152,6 +155,9 @@ func SrvStart(cfg *simplejson.Json) {
 	}
 	dingtalk := dingtalk.New(dingurl, dingToken)
 	fmt.Println("dingtalk: ",dingtalk)
+	Info.Printf("getAccToken done: %s /n", wx.AccToken)
+	lark := lark.New(larkurl, larkToken)
+	fmt.Println("lark: ",lark)
 	Info.Printf("getAccToken done: %s /n", wx.AccToken)
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -170,7 +176,7 @@ func SrvStart(cfg *simplejson.Json) {
 
 		w.Write([]byte(testStr))
 	})
-
+	// 企业微信接口
 	http.HandleFunc("/sender/mail", func(w http.ResponseWriter, r *http.Request) {
 		var pload payload
 		contentType := r.Header.Get("Content-Type")
@@ -292,6 +298,7 @@ func SrvStart(cfg *simplejson.Json) {
 		}
 
 	})
+	// 钉钉机器人接口
 	http.HandleFunc("/sender/dingtalk", func(w http.ResponseWriter, r *http.Request) {
 		var pload payload
 		contentType := r.Header.Get("Content-Type")
@@ -362,6 +369,93 @@ func SrvStart(cfg *simplejson.Json) {
 			}
 		} else {
 			resp, err := dingtalk.SendMsg("", pload.To, pload.Content)
+			if err != nil {
+				Error.Println(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			} else {
+				Info.Printf(string(resp))
+				w.Write(resp)
+			}
+		}
+
+	})
+	// 飞书机器人接口
+	http.HandleFunc("/sender/lark", func(w http.ResponseWriter, r *http.Request) {
+		var pload payload
+		contentType := r.Header.Get("Content-Type")
+		fmt.Println("contentType: ", contentType)
+		switch {
+		case strings.Contains(contentType, "json"):
+			w.Header().Set("Content-Type", contentType)
+			b, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				fmt.Println("err: ", err)
+				Error.Println(err)
+			}
+			fmt.Println("b: ", b)
+			//err = json.Unmarshal(b,&pload)
+			err = pload.UnmarshalJSON(b)
+			if err != nil {
+				fmt.Println("json.Unmarshal: ",err)
+				Error.Println(err)
+			}
+			fmt.Println("pload: ", pload.Content)
+
+		case strings.Contains(contentType, "x-www-form-urlencoded"):
+			err := r.ParseForm()
+			if err != nil {
+				Error.Println(err)
+			}
+			pload.To = r.PostFormValue("to")
+
+			//testmarkdown := r.PostFormValue("markdown")
+			//if MsgType == "markdown"{
+			//	var markdown Markdown
+			//	err = json.Unmarshal([]byte(testmarkdown), &markdown)
+			//	if err != nil{
+			//		fmt.Println("json.Unmarshal err: ",err)
+			//	}
+			//	pload.Content = r.PostFormValue("content")
+			//	pload.Markdown = markdown
+			//}else {
+			fmt.Println("test: ", MsgType)
+			pload.Content = r.PostFormValue("content")
+			fmt.Println("pload.Content: ", pload.Content)
+			//}
+
+		case strings.Contains(contentType, "markdown"):
+			fmt.Println("r.Body: ", contentType)
+			w.Header().Set("Content-Type", contentType)
+			b, err := ioutil.ReadAll(r.Body)
+			fmt.Println("r.Body: ", b)
+			if err != nil {
+				Error.Println(err)
+			}
+			err = pload.UnmarshalJSON(b)
+			if err != nil {
+				Error.Println(err)
+			}
+
+		default:
+			fmt.Println("err")
+			Error.Println("invalid Content-Type")
+		}
+		Info.Printf("#sendWechat# client:%s, to:%s, requestType:%s, content:%s\n", r.RemoteAddr, pload.To, contentType, pload.Content)
+		// 判断发送内容是否是markdown格式的，默认非markdown格式
+		if pload.MsgType == "markdown" {
+			resp, err := dingtalk.SendMsgMarkdown("", pload.To,pload.Title,pload.Content)
+			if err != nil {
+				Error.Println(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			} else {
+				Info.Printf(string(resp))
+				w.Write(resp)
+			}
+		} else {
+			fmt.Println(pload.Content)
+			//Content := fmt.Sprintf("{\"text\":\" %s\"}",pload.Content)
+			fmt.Println(pload.Content)
+			resp, err := lark.SendMsg(pload.Content)
 			if err != nil {
 				Error.Println(err)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
