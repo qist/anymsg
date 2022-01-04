@@ -1,5 +1,0 @@
-INFO: 2022/01/04 16:31:33 http.go:147: httpAddr:0.0.0.0:4000
-INFO: 2022/01/04 16:31:33 http.go:148: smtpAddr:smtp.vip.com:25,smtpUser:****@vip.com,smtpPass:*****
-ERROR: 2022/01/04 16:31:33 http.go:154: getAccToken failed: get WeChat Access Token error: api forbidden/n
-INFO: 2022/01/04 16:31:33 http.go:158: getAccToken done:  /n
-INFO: 2022/01/04 16:31:33 http.go:161: getAccToken done:  /n
