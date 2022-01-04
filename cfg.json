@@ -22,6 +22,6 @@
     },
     "lark":{
         "Url": "https://open.feishu.cn/open-apis/bot/v2/hook/%s",
-        "AccessToken": "21bf4631-4e2b-496e-9ed0-1cebaf9408e1"
+        "AccessToken": "xxxxxxxxxxxxxx"
     }
 }
