@@ -18,7 +18,7 @@
 
 >|参数名|是否必须|类型|说明|
 >|:----|:---|:----- |--------  |
->|from|否  |string | 发件人，必须xxx@staff.qkagame.com格式|
+>|from|否  |string | 发件人，必须xxx@staff.test.com格式|
 >|to|是  |string | 收件人地址，多个收件人用(,)分隔|
 >|subject|是  |string | 邮件标题|
 >|content|是  |string | 邮件内容|
